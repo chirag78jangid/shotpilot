@@ -3,13 +3,17 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: ShotPilot API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: shotpilot
+    description: ShotPilot camera guidance operations
+  - name: openai
+    description: OpenAI AI chat operations
 paths:
   /healthz:
     get:
@@ -24,6 +28,209 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /shotpilot/generate:
+    post:
+      operationId: generateShotPlan
+      tags: [shotpilot]
+      summary: Generate AI camera shooting plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateShotPlanBody"
+      responses:
+        "200":
+          description: Generated shot plan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShotPlan"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /shotpilot/saved:
+    get:
+      operationId: listSavedPlans
+      tags: [shotpilot]
+      summary: List saved shot plans
+      responses:
+        "200":
+          description: List of saved plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SavedShotPlan"
+    post:
+      operationId: saveShotPlan
+      tags: [shotpilot]
+      summary: Save a shot plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveShotPlanBody"
+      responses:
+        "201":
+          description: Saved plan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedShotPlan"
+
+  /shotpilot/saved/{id}:
+    delete:
+      operationId: deleteSavedPlan
+      tags: [shotpilot]
+      summary: Delete a saved plan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /openai/conversations:
+    get:
+      operationId: listOpenaiConversations
+      tags: [openai]
+      summary: List all conversations
+      responses:
+        "200":
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OpenaiConversation"
+    post:
+      operationId: createOpenaiConversation
+      tags: [openai]
+      summary: Create a new conversation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOpenaiConversationBody"
+      responses:
+        "201":
+          description: Created conversation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenaiConversation"
+
+  /openai/conversations/{id}:
+    get:
+      operationId: getOpenaiConversation
+      tags: [openai]
+      summary: Get conversation with messages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Conversation with messages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenaiConversationWithMessages"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenaiError"
+    delete:
+      operationId: deleteOpenaiConversation
+      tags: [openai]
+      summary: Delete a conversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenaiError"
+
+  /openai/conversations/{id}/messages:
+    get:
+      operationId: listOpenaiMessages
+      tags: [openai]
+      summary: List messages in a conversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OpenaiMessage"
+    post:
+      operationId: sendOpenaiMessage
+      tags: [openai]
+      summary: Send a text message and receive a streaming text response
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendOpenaiMessageBody"
+      responses:
+        "200":
+          description: SSE stream of assistant text chunks
+          content:
+            text/event-stream: {}
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +241,207 @@ components:
       required:
         - status
 
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    GenerateShotPlanBody:
+      type: object
+      properties:
+        deviceType:
+          type: string
+          enum: ["Mobile", "DSLR", "Mirrorless"]
+        brandModel:
+          type: string
+        cameraType:
+          type: string
+        shootingSituation:
+          type: string
+        purpose:
+          type: string
+        skillLevel:
+          type: string
+          enum: ["Beginner", "Intermediate", "Pro"]
+      required:
+        - deviceType
+        - brandModel
+        - cameraType
+        - shootingSituation
+        - purpose
+        - skillLevel
+
+    ShotPlan:
+      type: object
+      properties:
+        cameraAngles:
+          type: array
+          items:
+            type: string
+        shotList:
+          type: array
+          items:
+            type: string
+        cameraSettings:
+          type: array
+          items:
+            type: string
+        movementTips:
+          type: array
+          items:
+            type: string
+        editingSuggestions:
+          type: array
+          items:
+            type: string
+        summary:
+          type: string
+      required:
+        - cameraAngles
+        - shotList
+        - cameraSettings
+        - movementTips
+        - editingSuggestions
+        - summary
+
+    SaveShotPlanBody:
+      type: object
+      properties:
+        name:
+          type: string
+        deviceType:
+          type: string
+        brandModel:
+          type: string
+        shootingSituation:
+          type: string
+        purpose:
+          type: string
+        skillLevel:
+          type: string
+        plan:
+          $ref: "#/components/schemas/ShotPlan"
+      required:
+        - name
+        - deviceType
+        - brandModel
+        - shootingSituation
+        - purpose
+        - skillLevel
+        - plan
+
+    SavedShotPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        deviceType:
+          type: string
+        brandModel:
+          type: string
+        shootingSituation:
+          type: string
+        purpose:
+          type: string
+        skillLevel:
+          type: string
+        plan:
+          $ref: "#/components/schemas/ShotPlan"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - deviceType
+        - brandModel
+        - shootingSituation
+        - purpose
+        - skillLevel
+        - plan
+        - createdAt
+
+    OpenaiConversation:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - createdAt
+
+    OpenaiMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        conversationId:
+          type: integer
+        role:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - conversationId
+        - role
+        - content
+        - createdAt
+
+    CreateOpenaiConversationBody:
+      type: object
+      properties:
+        title:
+          type: string
+      required:
+        - title
+
+    SendOpenaiMessageBody:
+      type: object
+      properties:
+        content:
+          type: string
+      required:
+        - content
+
+    OpenaiConversationWithMessages:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpenaiMessage"
+      required:
+        - id
+        - title
+        - createdAt
+        - messages
+
+    OpenaiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

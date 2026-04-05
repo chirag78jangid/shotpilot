@@ -1,0 +1,128 @@
+Create a production-ready, Vercel-deployable web application called **ShotPilot**.
+
+---
+
+### 🎯 Goal:
+
+Build a clean, minimal AI-powered website that helps users create better videos using personalized camera and shooting guidance.
+
+---
+
+### 🧱 Tech Stack:
+
+* Frontend: Next.js (latest version, App Router)
+* Styling: Tailwind CSS (clean, minimal UI, no heavy animations)
+* Backend: Next.js API routes
+* AI Integration: OpenAI API (or placeholder for API key)
+* Deployment: Must be fully compatible with Vercel
+
+---
+
+### 🎨 UI Requirements:
+
+* Clean and minimal design (very limited animations)
+* Dark/light mode toggle
+* Fully responsive (mobile + desktop)
+* Simple and fast loading UI
+* Professional SaaS-style layout
+
+---
+
+### 🧠 Features:
+
+#### 1. Homepage:
+
+* Hero section with:
+  Title: “Turn Your Camera Into a Pro Tool 🎥”
+  Subtitle: “Get AI-powered video shooting guidance based on your device”
+* CTA button: “Start Creating”
+
+---
+
+#### 2. Input Form Page:
+
+Create a form that collects:
+
+* Device Type (Mobile / DSLR / Mirrorless)
+* Brand & Model
+* Camera Type
+* Shooting Situation (Reel, Travel, Cinematic, Night, Indoor, etc.)
+* Purpose (Instagram, YouTube, etc.)
+* Skill Level (Beginner / Intermediate / Pro)
+
+---
+
+#### 3. AI Result Page:
+
+After form submission:
+
+* Call AI API
+* Display:
+
+  * Camera Angles
+  * Shot List (step-by-step)
+  * Camera Settings
+  * Movement Tips
+  * Editing Suggestions
+* Clean card-based UI
+
+---
+
+#### 4. AI Chat Assistant:
+
+* Simple chatbot UI
+* User can ask questions
+* AI responds with video tips
+
+---
+
+#### 5. Save Feature:
+
+* Allow user to save generated results locally (localStorage)
+
+---
+
+### 🔐 Security:
+
+* Use environment variables for API keys (.env)
+* Sanitize all inputs
+* Prevent XSS and injection attacks
+* No sensitive data stored in frontend
+
+---
+
+### ⚙️ Performance:
+
+* Optimize for fast loading
+* Use server-side functions where needed
+* Lazy load components if required
+
+---
+
+### 📁 Project Structure:
+
+* Proper folder structure (app/, components/, api/)
+* Clean, readable, maintainable code
+
+---
+
+### 🚀 Deployment Ready:
+
+* Must run with:
+  npm install
+  npm run dev
+* Must be directly deployable on Vercel without errors
+
+---
+
+### 💡 Extra:
+
+* Add loading spinner while AI is generating response
+* Add error handling for API failure
+* Add basic SEO (title, meta tags)
+
+---
+
+### ⚠️ Important:
+
+Keep everything simple, clean, and beginner-friendly. Avoid unnecessary complexity or heavy animations.

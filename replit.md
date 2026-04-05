@@ -15,6 +15,22 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
+- **AI**: OpenAI via Replit AI Integrations (gpt-5.2)
+
+## Artifacts
+
+- **ShotPilot** (`artifacts/shotpilot`) — React + Vite frontend at `/`
+  - Pages: `/` (hero), `/create` (form), `/results` (AI plan), `/saved` (saved plans), `/chat` (AI assistant)
+  - Dark/light mode toggle with next-themes
+- **API Server** (`artifacts/api-server`) — Express 5 backend at `/api`
+  - Routes: `/api/shotpilot/generate`, `/api/shotpilot/saved`, `/api/openai/conversations/*`
+  - Streams AI responses via SSE
+
+## DB Tables
+
+- `saved_shot_plans` — user-saved shot plans with JSONB plan field
+- `conversations` — OpenAI chat conversations
+- `messages` — chat messages per conversation
 
 ## Key Commands
 
