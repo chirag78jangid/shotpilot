@@ -16,7 +16,7 @@ import {
   CheckCircle2,
   AlertTriangle
 } from "lucide-react";
-import { ShotPlan } from "@workspace/api-client-react/src/generated/api.schemas";
+import type { ShotPlan } from "@workspace/api-client-react";
 
 export default function Results() {
   const [location, setLocation] = useLocation();
@@ -59,7 +59,7 @@ export default function Results() {
       onError: (err) => {
         toast({
           title: "Failed to save plan",
-          description: err.error || "An unknown error occurred",
+          description: err.message || "An unknown error occurred",
           variant: "destructive"
         });
       }
@@ -140,7 +140,7 @@ export default function Results() {
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                {plan.cameraSettings.map((setting, i) => (
+                {plan.cameraSettings.map((setting: string, i: number) => (
                   <li key={i} className="flex items-start">
                     <CheckCircle2 className="h-5 w-5 mr-3 text-muted-foreground shrink-0 mt-0.5" />
                     <span>{setting}</span>
@@ -159,7 +159,7 @@ export default function Results() {
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                {plan.shotList.map((shot, i) => (
+                {plan.shotList.map((shot: string, i: number) => (
                   <li key={i} className="flex items-start">
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-xs font-medium mr-3 shrink-0 mt-0.5">
                       {i + 1}
@@ -180,7 +180,7 @@ export default function Results() {
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                {plan.cameraAngles.map((angle, i) => (
+                {plan.cameraAngles.map((angle: string, i: number) => (
                   <li key={i} className="flex items-start">
                     <CheckCircle2 className="h-5 w-5 mr-3 text-muted-foreground shrink-0 mt-0.5" />
                     <span>{angle}</span>
@@ -199,7 +199,7 @@ export default function Results() {
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                {plan.movementTips.map((tip, i) => (
+                {plan.movementTips.map((tip: string, i: number) => (
                   <li key={i} className="flex items-start">
                     <CheckCircle2 className="h-5 w-5 mr-3 text-muted-foreground shrink-0 mt-0.5" />
                     <span>{tip}</span>
@@ -218,7 +218,7 @@ export default function Results() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
-                {plan.editingSuggestions.map((suggestion, i) => (
+                {plan.editingSuggestions.map((suggestion: string, i: number) => (
                   <div key={i} className="flex items-start">
                     <CheckCircle2 className="h-5 w-5 mr-3 text-muted-foreground shrink-0 mt-0.5" />
                     <span>{suggestion}</span>

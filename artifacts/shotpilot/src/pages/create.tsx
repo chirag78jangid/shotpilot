@@ -53,7 +53,7 @@ export default function Create() {
       onError: (error) => {
         toast({
           title: "Failed to generate plan",
-          description: error.error || "An unexpected error occurred",
+          description: error.message || "An unexpected error occurred",
           variant: "destructive",
         });
       }

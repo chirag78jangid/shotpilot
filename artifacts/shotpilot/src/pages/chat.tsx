@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useQueryClient } from "@tanstack/react-query";
-import { Send, MessageSquare, Loader2, Plus, Trash2, Menu, X } from "lucide-react";
+import { Send, MessageSquare, Loader2, Plus, Trash2, Menu, X, Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Chat() {
@@ -28,7 +28,7 @@ export default function Chat() {
   
   const { data: activeConversation, isLoading: isLoadingMessages } = useGetOpenaiConversation(
     activeConvId || 0,
-    { query: { enabled: !!activeConvId } }
+    { query: { enabled: !!activeConvId, queryKey: getGetOpenaiConversationQueryKey(activeConvId || 0) } }
   );
 
   const createConv = useCreateOpenaiConversation({
