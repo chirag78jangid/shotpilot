@@ -4,7 +4,8 @@
     "outDir": "dist",
     "rootDir": ".",
     "types": ["node"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noEmitOnError": false
   },
   "include": ["src", "api"]
 }
