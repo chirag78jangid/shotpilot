@@ -2,10 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "types": ["node"],
-    "esModuleInterop": true,
-    "noEmit": true
+    "esModuleInterop": true
   },
-  "include": ["src"]
+  "include": ["src", "api"]
 }
