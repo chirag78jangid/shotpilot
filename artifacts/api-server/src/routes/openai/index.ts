@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { conversations, messages } from "@workspace/db";
+import type { Conversation, Message } from "@workspace/db";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { eq, asc } from "drizzle-orm";
 import {
@@ -26,7 +27,7 @@ openaiRouter.get("/openai/conversations", async (req, res) => {
       .select()
       .from(conversations)
       .orderBy(asc(conversations.createdAt));
-    res.json(convs.map(c => ({
+    res.json(convs.map((c: Conversation) => ({
       id: c.id,
       title: c.title,
       createdAt: c.createdAt?.toISOString() ?? new Date().toISOString(),
@@ -89,7 +90,7 @@ openaiRouter.get("/openai/conversations/:id", async (req, res) => {
       id: conv.id,
       title: conv.title,
       createdAt: conv.createdAt?.toISOString() ?? new Date().toISOString(),
-      messages: msgs.map(m => ({
+      messages: msgs.map((m: Message) => ({
         id: m.id,
         conversationId: m.conversationId,
         role: m.role,
@@ -143,7 +144,7 @@ openaiRouter.get("/openai/conversations/:id/messages", async (req, res) => {
       .where(eq(messages.conversationId, parsed.data.id))
       .orderBy(asc(messages.createdAt));
 
-    res.json(msgs.map(m => ({
+    res.json(msgs.map((m: Message) => ({
       id: m.id,
       conversationId: m.conversationId,
       role: m.role,
@@ -189,7 +190,7 @@ openaiRouter.post("/openai/conversations/:id/messages", async (req, res) => {
 
     const chatMessages = [
       { role: "system" as const, content: SYSTEM_PROMPT },
-      ...history.map(m => ({ role: m.role as "user" | "assistant", content: m.content })),
+      ...history.map((m: Message) => ({ role: m.role as "user" | "assistant", content: m.content })),
     ];
 
     res.setHeader("Content-Type", "text/event-stream");

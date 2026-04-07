@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { savedShotPlansTable } from "@workspace/db";
+import type { SavedShotPlan } from "@workspace/db";
 import { GenerateShotPlanBody, SaveShotPlanBody, DeleteSavedPlanParams } from "@workspace/api-zod";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { eq } from "drizzle-orm";
@@ -69,7 +70,7 @@ shotpilotRouter.get("/shotpilot/saved", async (req, res) => {
       .select()
       .from(savedShotPlansTable)
       .orderBy(savedShotPlansTable.createdAt);
-    res.json(plans.map(p => ({
+    res.json(plans.map((p: SavedShotPlan) => ({
       id: p.id,
       name: p.name,
       deviceType: p.deviceType,
